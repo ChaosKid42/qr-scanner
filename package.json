@@ -27,6 +27,8 @@
     "@ionic/angular": "^5.0.0",
     "@zxing/ngx-scanner": "^3.0.0",
     "angularx-qrcode": "^2.3.5",
+    "base45-web": "^1.0.2",
+    "cbor-web": "^8.1.0",
     "file-saver": "^2.0.2",
     "ngx-filesaver": "^10.0.0",
     "ngx-indexed-db": "^5.0.5",

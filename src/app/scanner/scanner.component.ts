@@ -3,6 +3,8 @@ import {AlertController} from '@ionic/angular';
 import {ActionService} from '../shared/services/action.service';
 import {take, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import * as cbor from 'cbor-web';
+import * as b45 from 'base45-web';
 
 @Component({
     selector: 'app-scanner',
@@ -19,8 +21,8 @@ export class ScannerComponent implements OnInit {
     private currentCameraIndex = 0;
 
     constructor(private alertController: AlertController,
-                private actionService: ActionService,
-                private router: Router) {
+        private actionService: ActionService,
+        private router: Router) {
     }
 
     ngOnInit() {
@@ -46,6 +48,19 @@ export class ScannerComponent implements OnInit {
     }
 
     onCodeResult(resultString: string): void {
+        function replacer(key, value) {
+            if (value instanceof Map) {
+                return {
+                    dataType: 'Map',
+                    value: Array.from(value.entries()), // or with spread: value: [...value]
+                };
+            } else {
+                return value;
+            }
+        }
+        if (resultString.startsWith('BP:')) {
+            resultString = JSON.stringify(cbor.decodeFirstSync(new Uint8Array(b45.decode(resultString.substr(3)))), replacer);
+        }
         console.log(resultString);
         this.actionService.handleScan(resultString)
             .pipe(
